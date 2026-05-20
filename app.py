@@ -8,33 +8,132 @@ from flask import Flask, request, render_template_string
 
 app = Flask(__name__)
 
-# --- PREMIUM DASHBOARD WITH IFRAME RENDERER ---
+# --- UPDATED PROFESSIONAL UI FOR PROPER LAYOUT RENDERING ---
 HTML_TEMPLATE = """
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FRUX STORE - Full Mail Layout Extractor</title>
+    <title>FRUX STORE - Premium Mail Viewer</title>
     <style>
-        body { font-family: sans-serif; background-color: #0f172a; color: #f8fafc; padding: 20px; margin: 0; }
-        .container { max-width: 900px; margin: 0 auto; background: #1e293b; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        h1 { text-align: center; color: #38bdf8; font-size: 24px; margin-bottom: 25px; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; color: #94a3b8; font-weight: bold; }
-        input { width: 100%; padding: 12px; border: 1px solid #334155; border-radius: 6px; background: #0f172a; color: #fff; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: #0284c7; border: none; border-radius: 6px; color: white; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        button:hover { background: #0369a1; }
-        .mail-box { background: #0f172a; border: 1px solid #334155; border-radius: 8px; margin-top: 25px; padding: 15px; }
-        .mail-header { font-size: 14px; color: #94a3b8; margin-bottom: 10px; border-bottom: 1px solid #334155; padding-bottom: 8px; line-height: 1.6; }
-        .otp-display { background: #e11d48; color: white; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 14px; }
-        .mail-iframe { width: 100%; height: 600px; border: none; background: white; border-radius: 6px; margin-top: 10px; }
-        .status { text-align: center; font-weight: bold; margin-top: 15px; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            background-color: #0b0f19; 
+            color: #f1f5f9; 
+            padding: 15px; 
+            margin: 0; 
+        }
+        .container { 
+            max-width: 650px; 
+            margin: 0 auto; 
+            background: #151f32; 
+            padding: 20px; 
+            border-radius: 12px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4); 
+        }
+        h1 { 
+            text-align: center; 
+            color: #38bdf8; 
+            font-size: 22px; 
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .form-group { 
+            margin-bottom: 15px; 
+        }
+        label { 
+            display: block; 
+            margin-bottom: 6px; 
+            color: #94a3b8; 
+            font-size: 13px;
+            font-weight: 600; 
+        }
+        input { 
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid #24334d; 
+            border-radius: 8px; 
+            background: #0b0f19; 
+            color: #fff; 
+            box-sizing: border-box; 
+            font-size: 14px;
+        }
+        input:focus {
+            border-color: #38bdf8;
+            outline: none;
+        }
+        button { 
+            width: 100%; 
+            padding: 14px; 
+            background: #0284c7; 
+            border: none; 
+            border-radius: 8px; 
+            color: white; 
+            font-size: 15px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            margin-top: 5px; 
+            transition: background 0.2s;
+        }
+        button:hover { 
+            background: #0369a1; 
+        }
+        .mail-box { 
+            background: #111827; 
+            border: 1px solid #1f2937; 
+            border-radius: 10px; 
+            margin-top: 20px; 
+            padding: 15px; 
+            overflow: hidden;
+        }
+        .mail-header { 
+            font-size: 13px; 
+            color: #9ca3af; 
+            margin-bottom: 12px; 
+            border-bottom: 1px solid #1f2937; 
+            padding-bottom: 10px; 
+            line-height: 1.5; 
+        }
+        .otp-container {
+            margin-top: 8px;
+            background: rgba(225, 29, 72, 0.1);
+            border: 1px solid #e11d48;
+            padding: 8px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+        .otp-display { 
+            color: #f43f5e; 
+            font-weight: bold; 
+            font-size: 16px; 
+        }
+        /* Adjusted container for handling structured email layout display */
+        .mail-display-wrapper {
+            width: 100%;
+            background: #ffffff;
+            border-radius: 6px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        .mail-iframe { 
+            width: 100%; 
+            height: 500px; 
+            border: none; 
+            display: block;
+        }
+        .status { 
+            text-align: center; 
+            font-weight: bold; 
+            margin-top: 15px; 
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🔥 FRUX STORE - REAL MAIL LAYOUT 🔥</h1>
+        <h1>🔥 FRUX PREMIUM VIEWER 🔥</h1>
         <form method="POST" action="/fetch">
             <div class="form-group">
                 <label>📧 Gmail Address:</label>
@@ -59,9 +158,13 @@ HTML_TEMPLATE = """
                         <b>📩 From:</b> {{ mail.from_ }}<br>
                         <b>🕒 Date:</b> {{ mail.date_ }}<br>
                         <b>📌 Subject:</b> {{ mail.subject }}<br>
-                        <b>🔑 Extracted Code:</b> <span class="otp-display">{{ mail.otp }}</span>
+                        <div class="otp-container">
+                            <b>🔑 Extracted Code:</b> <span class="otp-display">{{ mail.otp }}</span>
+                        </div>
                     </div>
-                    <iframe class="mail-iframe" srcdoc="{{ mail.body_html }}"></iframe>
+                    <div class="mail-display-wrapper">
+                        <iframe class="mail-iframe" srcdoc="{{ mail.body_html }}"></iframe>
+                    </div>
                 </div>
             {% endfor %}
         {% endif %}
@@ -79,7 +182,6 @@ def safe_decode(header_value):
     except: return str(header_value)
 
 def get_html_body(msg):
-    """Email ka asli full HTML layout nikalne ke liye"""
     if msg.is_multipart():
         for part in msg.walk():
             if part.get_content_type() == "text/html":
@@ -94,7 +196,7 @@ def get_html_body(msg):
                     payload = part.get_payload(decode=True)
                     if payload:
                         plain_text = payload.decode(part.get_content_charset() or "utf-8", errors='replace')
-                        return f"<pre style='font-family: sans-serif; padding:15px;'>{plain_text}</pre>"
+                        return f"<pre style='font-family:sans-serif; padding:15px; color:#333;'>{plain_text}</pre>"
                 except: pass
     else:
         try:
@@ -102,9 +204,9 @@ def get_html_body(msg):
             if payload:
                 decoded = payload.decode(msg.get_content_charset() or "utf-8", errors='replace')
                 if msg.get_content_type() == "text/html": return decoded
-                return f"<pre style='font-family: sans-serif; padding:15px;'>{decoded}</pre>"
+                return f"<pre style='font-family:sans-serif; padding:15px; color:#333;'>{decoded}</pre>"
         except: pass
-    return "<h3>No visual content found in this mail.</h3>"
+    return "<p style='padding:15px; color:#333;'>No body content available.</p>"
 
 @app.route('/')
 def home():
@@ -126,7 +228,7 @@ def fetch_mails():
         
         if not mail_ids:
             mail.logout()
-            return render_template_string(HTML_TEMPLATE, error="Inbox khali hai!")
+            return render_template_string(HTML_TEMPLATE, error="Inbox is empty.")
 
         latest_ids = mail_ids[-3:]
         latest_ids.reverse()
@@ -141,16 +243,13 @@ def fetch_mails():
                     from_ = safe_decode(msg.get("From"))
                     date_ = safe_decode(msg.get("Date"))
                     
-                    # Full HTML Layout raw data nikalo
                     body_html = get_html_body(msg)
                     
-                    # OTP nikalne ka regex logic
                     clean_text = re.sub(r'<[^>]+>', ' ', body_html)
                     codes = re.findall(r'\b\d{4,8}\b', clean_text)
                     clean_codes = [c for c in codes if c not in ["2024", "2025", "2026", "2027"]]
                     otp = clean_codes[0] if clean_codes else "NOT FOUND"
                     
-                    # Quotes ko HTML me escape karein taaki iframe break na ho
                     escaped_html = body_html.replace('"', '&quot;')
 
                     fetched_mails.append({
@@ -164,7 +263,7 @@ def fetch_mails():
         return render_template_string(HTML_TEMPLATE, mails=fetched_mails, status_msg="Successfully fetched full mail layouts!")
 
     except imaplib.IMAP4.error:
-        return render_template_string(HTML_TEMPLATE, error="Authentication Failed! App password galat hai.")
+        return render_template_string(HTML_TEMPLATE, error="Authentication Failed!")
     except Exception as e:
         return render_template_string(HTML_TEMPLATE, error=f"Error: {str(e)}")
 
